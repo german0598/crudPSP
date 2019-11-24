@@ -12,15 +12,17 @@ export class ProductoCreateComponent implements OnInit {
     public formProductos: FormGroup;
     @Input() productoEditar: any;
     @Input() idProducto: any = null;
+    @Output() productosNuevos = new EventEmitter<any []>();
+    public categorias: [] = [];
 
     hide = true;
 
-    categorias: any [] = [
-      { value: 1, viewValue: 'Bebidas' },
-      { value: 2, viewValue: 'Ropa Hombre' },
-      { value: 3, viewValue: 'Ropa Mujer' },
-      { value: 4, viewValue: 'Tenis hombre' },
-    ];
+    // categorias: any [] = [
+    //   { value: 1, viewValue: 'Bebidas' },
+    //   { value: 2, viewValue: 'Ropa Hombre' },
+    //   { value: 3, viewValue: 'Ropa Mujer' },
+    //   { value: 4, viewValue: 'Tenis hombre' },
+    // ];
 
     constructor( private productoService: ProductsService ) { }
 
@@ -34,33 +36,39 @@ export class ProductoCreateComponent implements OnInit {
         disponible: new FormControl(true, Validators.required),
       });
 
+      this.productoService.cargarListas().subscribe( (res) => {
+        this.categorias = res;
+      });
+
     }
 
-    guardarProducto() {
-      if ( this.formProductos.invalid ) { return; }
+    public guardarProducto() {
 
+      if ( this.formProductos.invalid ) { return; }
       const producto = {
         disponible: this.formProductos.value.disponible,
         precio: this.formProductos.value.precio,
         nombre: this.formProductos.value.nombre,
         categoria: this.formProductos.value.categoria,
-        fecha: this.formProductos.value.fecha
+        fechaProducto: this.formProductos.value.fecha
       };
-
-      this.productoService.guardarProducto( producto, this.idProducto );
+      console.log(producto, this.idProducto);
+      this.productoService.guardarProducto( producto, this.idProducto ).subscribe( (res) => {
+        this.productosNuevos.emit(res);
+      });
     }
 
-  resetForm() {
-    this.formProductos.setValue({
-      disponible: null,
-      precio: null,
-      nombre: null,
-      categoria: null,
-      fecha: null
-    });
+    public resetForm() {
+      this.formProductos.setValue({
+        disponible: null,
+        precio: null,
+        nombre: null,
+        categoria: null,
+        fecha: null
+      });
 
     // this.formProductos.reset();
-  }
+    }
 
 
 }

@@ -1,11 +1,11 @@
 
 <div class="row">
   <div class="col-12">
-    <app-producto-create #formCreate [productoEditar]="productoEditar" [idProducto]="idProducto"></app-producto-create>
+    <app-producto-create #formCreate [productoEditar]="productoEditar" [idProducto]="idProducto" (productosNuevos)="actualizarLista($event)"></app-producto-create>
   </div>
 
   <div class="col-12">
-    <app-producto-list (productoEditar)="editar($event)"></app-producto-list>
+    <app-producto-list #listProductos (productoEditar)="editar($event)"></app-producto-list>
   </div>
 
 </div>
